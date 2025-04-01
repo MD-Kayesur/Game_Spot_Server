@@ -10,7 +10,7 @@ const port = process.env.PORT || 4001
 app.use(cors())
 app.use(express.json())
 
- 
+
 
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.6plf0.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
@@ -33,14 +33,15 @@ async function run() {
         const MyReviewsCollention = client.db('Game_Spot').collection('MyReviews')
         const WatchListCollention = client.db('Game_Spot').collection('WatchList')
         const blogsCollention = client.db('Game_Spot').collection('blogs')
-         
+        const BannersCollention = client.db('Game_Spot').collection('banner')
 
-       
 
-      
 
-        
- 
+
+
+
+
+
         // MyReviewsCollention Post
 
         app.post('/MyReviews', async (req, res) => {
@@ -50,16 +51,16 @@ async function run() {
         })
 
         app.get('/MyReviews', async (req, res) => {
-            // const data = { userEmail : email  }
 
-            const result = await MyReviewsCollention.find( ).toArray()  
+            const result = await MyReviewsCollention.find().toArray()
+
             res.send(result)
 
         })
 
         app.get('/AllReviews', async (req, res) => {
             const result = await MyReviewsCollention.find().toArray()
-             
+
             res.send(result)
 
         })
@@ -67,8 +68,8 @@ async function run() {
 
         app.get('/HightReview', async (req, res) => {
             const result = await MyReviewsCollention.find().toArray()
-            const sortData = result.sort((a, b) => b.rating - a.rating) 
-            const data = sortData.slice(0,6)
+            const sortData = result.sort((a, b) => b.rating - a.rating)
+            const data = sortData.slice(0, 6)
             res.send(data)
 
         })
@@ -76,14 +77,15 @@ async function run() {
 
         app.delete('/MyReviews/:id', async (req, res) => {
             const id = req.params.id
-             console.log(id)
+            console.log(id)
             const queary = { _id: new ObjectId(id) }
             const result = await MyReviewsCollention.deleteOne(queary)
             res.send(result)
         })
- 
+
         // my car update
-        app.patch("/MyReviews/:id", async (req, res) => {
+
+        app.put("/MyReviews/:id", async (req, res) => {
             const { id } = req.params;
             const updateData = req.body;
             try {
@@ -97,14 +99,14 @@ async function run() {
             }
         });
 
- 
+
         //  WatchListCollention
         app.post('/WatchList', async (req, res) => {
             const data = req.body
             const result = await WatchListCollention.insertOne(data)
             res.send(result)
         })
- 
+
 
         app.get('/WatchList', async (req, res) => {
             const result = await WatchListCollention.find().toArray()
@@ -112,7 +114,7 @@ async function run() {
             res.send(result)
 
         })
-       
+
 
         app.delete('/WatchList/:id', async (req, res) => {
             const id = req.params.id
@@ -123,13 +125,24 @@ async function run() {
         })
 
 
-// blogsCollention
-app.get('/blogs', async (req, res) => {
-    const result = await blogsCollention.find().toArray()
-    // const sortData = result.sort((a, b) => b.Daily_Rental_Price - a.Daily_Rental_Price)
-    res.send(result)
+        // blogsCollention
+        app.get('/blogs', async (req, res) => {
+            const result = await blogsCollention.find().toArray()
+            // const sortData = result.sort((a, b) => b.Daily_Rental_Price - a.Daily_Rental_Price)
+            res.send(result)
 
-})
+        })
+
+
+        app.get('/Banners', async (req, res) => {
+            const result = await BannersCollention.find().toArray()
+            // const sortData = result.sort((a, b) => b.Daily_Rental_Price - a.Daily_Rental_Price)
+            res.send(result)
+
+        })
+
+
+
 
 
         // Send a ping to confirm a successful connection
